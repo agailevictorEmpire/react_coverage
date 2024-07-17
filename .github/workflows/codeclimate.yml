@@ -3,7 +3,7 @@ name: CodeClimate Coverage
 on:
   pull_request:
     branches:
-      - 'main'
+      - 'develop'
     types: [opened, reopened, synchronize]
 
 jobs:
