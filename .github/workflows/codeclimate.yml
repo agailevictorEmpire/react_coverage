@@ -8,6 +8,8 @@ on:
 
 jobs:
   codeclimate:
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:
@@ -19,16 +21,27 @@ jobs:
         with:
           node-version: 14
 
+      - name: Download cc-test-reporter binary
+        run: |
+          mkdir -p tmp/
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+          chmod +x ./tmp/cc-test-reporter
+
       - name: Install dependencies
         run: |
           cd frontend
           npm install
 
       - name: Upload coverage to CodeClimate
-        uses: paambaati/codeclimate-action@v2.7.3
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
-        with:
-          workingDirectory: frontend
-          coverageCommand: ./node_modules/nyc/bin/nyc.js --reporter=clover yarn test --watchAll=false --coverage --maxWorkers 2 -u
-          debug: true
+        run: |
+          cd frontend
+          ../tmp/cc-test-reporter before-build
+          ./node_modules/nyc/bin/nyc.js --reporter=lcov --exclude=node_modules --exclude=frontend/src/assets --exclude=frontend/fonts --exclude=frontend/public --exclude=frontend/src/i18n.js yarn test --maxWorkers 2 -u --silent
+          ../tmp/cc-test-reporter format-coverage -t lcov -o "../coverage/codeclimate.investment.illustrator.frontend.json" ../frontend/coverage/lcov.info
+          ../tmp/cc-test-reporter upload-coverage --debug --input ../coverage/codeclimate.investment.illustrator.frontend.json
+
+      - name: Code Climate after-build
+        run: |
+          ./tmp/cc-test-reporter after-build --exit-code $?
