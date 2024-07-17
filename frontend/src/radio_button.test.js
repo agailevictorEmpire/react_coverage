@@ -18,7 +18,6 @@ describe('EmpireRadioButton', () => {
         const radioButton = screen.getByTestId('empire-radio-button');
         expect(radioButton).toBeInTheDocument();
 
-        // Check if the inner element is present
         const innerElement = screen.queryByTestId('empire-radio-button-inner');
         expect(innerElement).toBeInTheDocument();
     });
@@ -30,7 +29,6 @@ describe('EmpireRadioButton', () => {
         const radioButton = screen.getByTestId('empire-radio-button');
         expect(radioButton).toBeInTheDocument();
 
-        // Check that the inner element is not present
         const innerElement = screen.queryByTestId('empire-radio-button-inner');
         expect(innerElement).not.toBeInTheDocument();
     });
@@ -39,11 +37,9 @@ describe('EmpireRadioButton', () => {
         const onClickMock = jest.fn();
         render(<EmpireRadioButton isSelected={true} onClick={onClickMock} />);
 
-        // Simulate a click on the radio button
         const radioButton = screen.getByTestId('empire-radio-button');
         fireEvent.click(radioButton);
 
-        // Check if onClick function was called once
         expect(onClickMock).toHaveBeenCalledTimes(1);
     });
 });
