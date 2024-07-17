@@ -1,10 +1,11 @@
 name: CodeClimate Coverage
 
 on:
-  pull_request:
+  push:
     branches:
-      - 'develop'
-    types: [opened, reopened, synchronize]
+      - develop
+      - master
+  workflow_dispatch: #for manual dispatch
 
 jobs:
   codeclimate:
