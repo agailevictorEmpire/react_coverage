@@ -37,10 +37,10 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
         run: |
           cd frontend
-          ../tmp/cc-test-reporter before-build
-          ./node_modules/nyc/bin/nyc.js --reporter=lcov --exclude=node_modules --exclude=frontend/src/assets --exclude=frontend/fonts --exclude=frontend/public --exclude=frontend/src/i18n.js yarn test --maxWorkers 2 -u --silent
-          ../tmp/cc-test-reporter format-coverage -t lcov -o "../coverage/codeclimate.investment.illustrator.frontend.json" ../frontend/coverage/lcov.info
-          ../tmp/cc-test-reporter upload-coverage --debug --input ../coverage/codeclimate.investment.illustrator.frontend.json
+          ./tmp/cc-test-reporter before-build
+          ./node_modules/nyc/bin/nyc.js --reporter=lcov --exclude=node_modules --exclude=frontend/public yarn test --maxWorkers 2 -u --silent
+          ./tmp/cc-test-reporter format-coverage -t lcov -o "./coverage/codeclimate.react.coverage.frontend.json" ./frontend/coverage/lcov.info
+          ./tmp/cc-test-reporter upload-coverage --debug --input ./coverage/codeclimate.react.coverage.frontend.json
 
       - name: Code Climate after-build
         run: |
