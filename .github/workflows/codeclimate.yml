@@ -31,5 +31,5 @@ jobs:
           CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
         with:
           workingDirectory: frontend
-          coverageCommand: ./node_modules/nyc/bin/nyc.js --reporter=clover yarn test:watch --watchAll=false --coverage --maxWorkers 2 -u
+          coverageCommand: ./node_modules/nyc/bin/nyc.js --reporter=clover yarn test --watchAll=false --coverage --maxWorkers 2 -u
           debug: true
