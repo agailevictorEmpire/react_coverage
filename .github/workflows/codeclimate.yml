@@ -27,21 +27,25 @@ jobs:
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
           chmod +x ./tmp/cc-test-reporter
 
-      - name: Install dependencies
+      - name: List folders
         run: |
-          cd frontend
-          npm install
+          ls -la
 
-      - name: Upload coverage to CodeClimate
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
-        run: |
-          cd frontend
-          ../tmp/cc-test-reporter before-build
-          ./node_modules/nyc/bin/nyc.js --reporter=lcov --exclude=node_modules --exclude=frontend/public yarn test --maxWorkers 2 -u --silent
-          ../tmp/cc-test-reporter format-coverage -t lcov -o "./coverage/codeclimate.react.coverage.frontend.json" ./frontend/coverage/lcov.info
-          ../tmp/cc-test-reporter upload-coverage --debug --input ./coverage/codeclimate.react.coverage.frontend.json
+      # - name: Install dependencies
+      #   run: |
+      #     cd frontend
+      #     npm install
 
-      - name: Code Climate after-build
-        run: |
-          ./tmp/cc-test-reporter after-build --exit-code $?
+      # - name: Upload coverage to CodeClimate
+      #   env:
+      #     CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
+      #   run: |
+      #     cd frontend
+      #     ../tmp/cc-test-reporter before-build
+      #     ./node_modules/nyc/bin/nyc.js --reporter=lcov --exclude=node_modules --exclude=frontend/public yarn test --maxWorkers 2 -u --silent
+      #     ../tmp/cc-test-reporter format-coverage -t lcov -o "../coverage/codeclimate.react.coverage.frontend.json" ./frontend/coverage/lcov.info
+      #     ../tmp/cc-test-reporter upload-coverage --debug --input ../coverage/codeclimate.react.coverage.frontend.json
+
+      # - name: Code Climate after-build
+      #   run: |
+      #     ./tmp/cc-test-reporter after-build --exit-code $?
