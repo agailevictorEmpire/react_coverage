@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - develop
-      - master
   workflow_dispatch: #for manual dispatch
 
 jobs:
