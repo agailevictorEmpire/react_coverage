@@ -1,13 +1,15 @@
 name: CodeClimate Coverage
 
 on:
-  pull_request:
+  push:
     branches:
-      - 'develop'
-    types: [opened, reopened, synchronize]
+      - main
+  workflow_dispatch: #for manual dispatch
 
 jobs:
   codeclimate:
+    env:
+      CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:

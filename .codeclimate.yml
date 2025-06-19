@@ -1,0 +1,38 @@
+version: '2'
+checks:
+  file-lines:
+    config:
+      threshold: 250
+  method-lines:
+    config:
+      threshold: 100
+  similar-code:
+    enabled: false
+    config:
+      threshold: 60
+  method-complexity:
+    config:
+      threshold: 15
+exclude_patterns:
+  - '.docker/'
+  - '.github/'
+  - '.gitKeys/'
+  - '**/migrations/'
+  - '**/__init__.py'
+  - '**/*.json'
+  - 'manage.py'
+  - 'core/wsgi.py'
+  - 'core/settings.py'
+  - '**/data/'
+  - '**/locale/'
+  - 'scripts/'
+  - 'static/'
+  - 'frontend/fonts/'
+  - 'frontend/public/'
+  - 'frontend/src/assets/'
+  - 'frontend/src/data/'
+  - 'frontend/src/fixtures/'
+  - 'frontend/src/features/'
+  - 'frontend/src/styles/'
+  - 'frontend/package.json'
+  - 'frontend/package-lock.json'
