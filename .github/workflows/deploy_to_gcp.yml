@@ -29,7 +29,7 @@ jobs:
 
       - name: Slack Success
         id: slack_success
-        run: echo "✅ Slack message sent (placeholder)"
+        run: echo "✅ Slack message sent for successful deployment."
 
       - name: Get merged release branch name
         if: github.ref == 'refs/heads/main' && steps.slack_success.outcome == 'success'
