@@ -32,7 +32,7 @@ jobs:
         run: echo "✅ Slack message sent (placeholder)"
 
       - name: Get merged release branch name
-        if: steps.slack_success.outcome == 'success'
+        if: github.ref == 'refs/heads/main' && steps.slack_success.outcome == 'success'
         id: get_branch
         run: |
           echo "Finding merged release branch..."
@@ -46,7 +46,7 @@ jobs:
           echo "release_branch=$release_branch" >> $GITHUB_OUTPUT
 
       - name: Mark GitHub Release as Final
-        if: steps.get_branch.outputs.release_branch != ''
+        if: github.ref == 'refs/heads/main' && steps.get_branch.outputs.release_branch != ''
         uses: actions/github-script@v7
         with:
           script: |
