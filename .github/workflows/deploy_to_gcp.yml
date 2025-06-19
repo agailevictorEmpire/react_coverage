@@ -5,15 +5,16 @@ on:
     types: [created]
   push:
     branches:
+      - main
       - develop
-  workflow_dispatch: #for manual dispatch
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     permissions:
-      actions: "read"
-      contents: "write"
+      contents: write
+      actions: read
 
     steps:
       - name: Checkout code
@@ -22,6 +23,61 @@ jobs:
       - name: Define target environment
         run: |
           echo 'Branch is ${{ GITHUB.REF }}'
+
+      - name: Simulate deploy
+        run: echo "Deploying to GCP..."
+
+      - name: Slack Success
+        id: slack_success
+        run: echo "✅ Slack message sent (placeholder)"
+
+      - name: Get merged release branch name
+        if: steps.slack_success.outcome == 'success'
+        id: get_branch
+        run: |
+          echo "Finding merged release branch..."
+          release_branch=$(git log -1 --pretty=%B | grep -oE 'release/[0-9]+(\.[0-9]+)+')
+          if [ -z "$release_branch" ]; then
+            echo "No release branch found in merge commit."
+            echo "release_branch=" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          echo "✅ Found release branch: $release_branch"
+          echo "release_branch=$release_branch" >> $GITHUB_OUTPUT
+
+      - name: Mark GitHub Release as Final
+        if: steps.get_branch.outputs.release_branch != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releaseBranch = '${{ steps.get_branch.outputs.release_branch }}';
+            const tag = releaseBranch.split('/')[1]; // e.g. "2.3.115.19"
+
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100
+            });
+
+            const matchedRelease = releases.find(r => r.tag_name === tag);
+            if (!matchedRelease) {
+              core.setFailed(`No GitHub Release found for tag: ${tag}`);
+              return;
+            }
+
+            if (!matchedRelease.prerelease) {
+              console.log(`Release '${tag}' is already marked as final.`);
+              return;
+            }
+
+            await github.rest.repos.updateRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              release_id: matchedRelease.id,
+              prerelease: false
+            });
+
+            console.log(`✅ GitHub Release '${tag}' has been marked as final.`);
 
   release-branch:
     if: github.ref_type == 'tag'
